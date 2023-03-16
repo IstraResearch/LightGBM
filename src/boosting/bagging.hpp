@@ -7,6 +7,7 @@
 #define LIGHTGBM_BOOSTING_BAGGING_HPP_
 
 #include <string>
+#include <iostream>
 
 namespace LightGBM {
 
@@ -113,7 +114,10 @@ class BaggingSampleStrategy : public SampleStrategy {
       for (int i = 0;
           i < (num_data_ + bagging_rand_block_ - 1) / bagging_rand_block_; ++i) {
         bagging_rands_.emplace_back(config_->bagging_seed + i);
+        for( int j=0; j<3; ++j)
+          bagging_rands_.back().NextFloat();
       }
+      
 
       double average_bag_rate =
           (static_cast<double>(bag_data_cnt_) / num_data_) / config_->bagging_freq;
@@ -158,12 +162,21 @@ class BaggingSampleStrategy : public SampleStrategy {
     if (cnt <= 0) {
       return 0;
     }
+
+    data_size_t data_block_size = static_cast<data_size_t>(config_->pos_bagging_fraction);
     data_size_t cur_left_cnt = 0;
     data_size_t cur_right_pos = cnt;
-    // random bagging, minimal unit is one record
+
+    // Initial for to mix the rands better
+    
+    // random bagging, minimal unit is one data_block_size
+    bool cur_block_chosen = false;
     for (data_size_t i = 0; i < cnt; ++i) {
       auto cur_idx = start + i;
-      if (bagging_rands_[cur_idx / bagging_rand_block_].NextFloat() < config_->bagging_fraction) {
+      if(i % data_block_size == 0)
+        cur_block_chosen = bagging_rands_[cur_idx / bagging_rand_block_].NextFloat() < config_->bagging_fraction;
+      
+      if (cur_block_chosen) {
         buffer[cur_left_cnt++] = cur_idx;
       } else {
         buffer[--cur_right_pos] = cur_idx;

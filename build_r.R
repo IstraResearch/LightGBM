@@ -452,7 +452,7 @@ version <- gsub(
 tarball <- file.path(getwd(), sprintf("lightgbm_%s.tar.gz", version))
 
 install_cmd <- "R"
-install_args <- c("CMD", "INSTALL", "--no-multiarch", "--with-keep.source", tarball)
+install_args <- c("CMD", "INSTALL", "--no-multiarch", "--with-keep.source", "--library=/home/ofek/tmp", tarball)
 if (INSTALL_AFTER_BUILD) {
   .run_shell_command(install_cmd, install_args)
 } else {

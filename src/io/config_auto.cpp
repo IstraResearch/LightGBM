@@ -360,8 +360,8 @@ void Config::GetMembersFromString(const std::unordered_map<std::string, std::str
   CHECK_LE(bagging_fraction, 1.0);
 
   GetDouble(params, "pos_bagging_fraction", &pos_bagging_fraction);
-  CHECK_GT(pos_bagging_fraction, 0.0);
-  CHECK_LE(pos_bagging_fraction, 1.0);
+//  CHECK_GT(pos_bagging_fraction, 0.0);
+//  CHECK_LE(pos_bagging_fraction, 1.0);
 
   GetDouble(params, "neg_bagging_fraction", &neg_bagging_fraction);
   CHECK_GT(neg_bagging_fraction, 0.0);
